@@ -14,21 +14,20 @@ BRANCHES = {'#ff0000': 'central',
             '#a52a2a': 'sequoya'}
 
 
-def parse(response):
-    # todo: rather than this, iterate over each day div,
-    # store the date, if chess, add to list, else continue
-    for el in response.css('a.colorbox-inline::text').extract():
-        if el is not None:
-            if 'chess' in el.lower():
-                print(el)
-        else:
-            print('No chess events found.')
-
-
 class ChessCalendarSpider(scrapy.Spider):
     name = "chess"
 
-    def make_request(self):
+    def start_requests(self):
         urls = ['https://madisonpubliclibrary.org/calendar/search']
         for url in urls:
-            yield scrapy.Request(url=url, callback=parse)
+            yield scrapy.Request(url=url, callback=self.parse)
+
+    def parse(self, response):
+        # todo: rather than this, iterate over each day div,
+        # store the date, if chess, add to list, else continue
+        for el in response.css('a.colorbox-inline::text').extract():
+            if el is not None:
+                if 'chess' in el.lower():
+                    print(el)
+            else:
+                print('No chess events found.')
