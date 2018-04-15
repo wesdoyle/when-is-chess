@@ -26,17 +26,18 @@ class ChessCalendarSpider(scrapy.Spider):
 
     def parse(self, response):
         day = 7  # calendar starts on sunday
+        day_idx = day % 7
+        day_name = calendar.day_name[day_idx]
+        print(day_name)
+
         for el in response.css('.has-events').extract():
             soup = BeautifulSoup(el)
 
             for div in soup.find_all("div", {"class": "colorbox"}):
-                print(div)
+                for sub_div in div.find_all('a'):
+                    if 'chess' in str(sub_div.string).lower():
+                        print(sub_div.string)
 
-            day_idx = day % 7
-            # day_name = calendar.day_name[day_idx]
-            # print('*' * 30)
-            # print(day_name)
-            # print('*' * 30)
-            # print(el)
-            # day += 1
+        day += 1
+
 
