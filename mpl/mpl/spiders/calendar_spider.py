@@ -2,6 +2,8 @@
 Finds chess events on the library calendar for and prints the date and location
 """
 import scrapy
+import calendar
+from bs4 import BeautifulSoup
 
 BRANCHES = {'#ff0000': 'central',
             '#ffa500': 'alicia_goodman',
@@ -23,10 +25,18 @@ class ChessCalendarSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
-        # todo: rather than this, iterate over each day div,
-        # store the date, if chess, add to list, else continue
-        day = 0
+        day = 7  # calendar starts on sunday
         for el in response.css('.has-events').extract():
-            print(str(day % 7))
-            day += 1
+            soup = BeautifulSoup(el)
+
+            for div in soup.find_all("div", {"class": "colorbox"}):
+                print(div)
+
+            day_idx = day % 7
+            # day_name = calendar.day_name[day_idx]
+            # print('*' * 30)
+            # print(day_name)
+            # print('*' * 30)
+            # print(el)
+            # day += 1
 
