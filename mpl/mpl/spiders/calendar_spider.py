@@ -25,9 +25,8 @@ class ChessCalendarSpider(scrapy.Spider):
     def parse(self, response):
         # todo: rather than this, iterate over each day div,
         # store the date, if chess, add to list, else continue
-        for el in response.css('a.colorbox-inline::text').extract():
-            if el is not None:
-                if 'chess' in el.lower():
-                    print(el)
-            else:
-                print('No chess events found.')
+        day = 0
+        for el in response.css('.has-events').extract():
+            print(str(day % 7))
+            day += 1
+
