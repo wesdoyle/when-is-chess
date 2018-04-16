@@ -2,7 +2,6 @@
 Finds chess events on the library calendar for and prints the date and location
 '''
 import scrapy
-import calendar
 from bs4 import BeautifulSoup
 
 BRANCHES = {'ff0000': 'central',
@@ -25,32 +24,28 @@ class ChessCalendarSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
-        day = 0
+        calendar = dict()
 
         for el in response.css('.has-events').extract():
-            day_idx = day % 8
-            day_name = calendar.day_name[day_idx - 1]
+
             soup = BeautifulSoup(el, 'lxml')
 
-            links = soup.find_all('div', {'class': 'colorbox-inline'})
-            days = soup.find_all('div', {'class': 'day'})
-            colors = soup.find_all('div', {'class': 'stripe'})
+            day = soup.find('div', {'class': 'day'})
+            daylink = day.find('a')
+            if daylink.string not in calendar:
+                calendar[daylink.string] = {'events' : []}
 
-            for color in colors:
-                hex_color = str(color['style'][-6:])
-                if hex_color in BRANCHES:
-                    print(BRANCHES[hex_color])
+            links = soup.find_all('a', {'class': 'colorbox-inline'})
+            branch_colors = soup.find_all('div', {'class': 'stripe'})
 
-            for div in links:
-                print(div.string)
-                # if 'chess' in str(div.string).lower():
-                #     print(day_name)
-                #     print(div.string)
+            for link in links:
+                calendar[daylink.string]['events'].append(link.string)
 
-            for d in days:
-                print(f'Day: {d.find("a").text}')
+            # branches = []
+            # for color in branch_colors:
+            #     hex_color = str(color['style'][-6:])
+            #     if hex_color in BRANCHES:
+            #         branches.append(BRANCHES[hex_color])
 
-            day += 1
-            print(len(links))
-            print(len(colors))
-            print('*'*30)
+        print(calendar)
+
