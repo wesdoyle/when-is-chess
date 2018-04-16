@@ -1,6 +1,7 @@
 # when-is-chess
 
-This app tells me which days have chess events within Madison Public Libraries.
+This app outputs chess events for the current month at public Libaries in Madison.
 
 `cd mpl`
+
 `scrapy crawl chess`
