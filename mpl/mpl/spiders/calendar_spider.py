@@ -1,6 +1,6 @@
-"""
+'''
 Finds chess events on the library calendar for and prints the date and location
-"""
+'''
 import scrapy
 import calendar
 from bs4 import BeautifulSoup
@@ -17,7 +17,7 @@ BRANCHES = {'#ff0000': 'central',
 
 
 class ChessCalendarSpider(scrapy.Spider):
-    name = "chess"
+    name = 'chess'
 
     def start_requests(self):
         urls = ['https://madisonpubliclibrary.org/calendar/search']
@@ -25,18 +25,20 @@ class ChessCalendarSpider(scrapy.Spider):
             yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
-        day = 7  # calendar starts on sunday
-        day_idx = day % 7
-        day_name = calendar.day_name[day_idx]
-        print(day_name)
+        day = 0
 
         for el in response.css('.has-events').extract():
+            day_idx = day % 8
+            day_name = calendar.day_name[day_idx - 1]
             soup = BeautifulSoup(el, 'lxml')
-
-            for div in soup.find_all("a", {"class": "colorbox-inline"}):
+            for div in soup.find_all('a', {'class': 'colorbox-inline'}):
+                location = 'TODO'
+                time = 'TODO'
                 if 'chess' in str(div.string).lower():
+                    print(day_name)
                     print(div.string)
-
-        day += 1
-
+                    print(location)
+                    print(time)
+                    print('\n')
+            day += 1
 
