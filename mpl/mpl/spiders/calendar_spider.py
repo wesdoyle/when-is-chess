@@ -47,5 +47,9 @@ class ChessCalendarSpider(scrapy.Spider):
             #     if hex_color in BRANCHES:
             #         branches.append(BRANCHES[hex_color])
 
-        print(calendar)
+        for day, events in calendar.items():
+            days_events = calendar[day]['events']
+            for e in days_events:
+                if 'chess' in e.lower():
+                    print(f'Day: {day} -> Event: {e}')
 
