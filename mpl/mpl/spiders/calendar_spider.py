@@ -31,7 +31,7 @@ class ChessCalendarSpider(scrapy.Spider):
         print(day_name)
 
         for el in response.css('.has-events').extract():
-            soup = BeautifulSoup(el)
+            soup = BeautifulSoup(el, 'lxml')
 
             for div in soup.find_all("a", {"class": "colorbox-inline"}):
                 if 'chess' in str(div.string).lower():
