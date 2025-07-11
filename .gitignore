@@ -3,3 +3,4 @@ __pycache__
 mpl/.scrapy/*
 .venv
 venv
+.scrapy
